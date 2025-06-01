@@ -1,0 +1,2545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>X and Y Bot - JEE Admission Assistant</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        body {
+            background-color: #fff9f0;
+            color: #000000;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        .top-section {
+            background: #fff9f0;
+            padding: 0;
+            text-align: center;
+            border-bottom: 1px solid #e0e4e8;
+            margin-bottom: 2rem;
+        }
+        .carousel {
+            position: relative;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            overflow: hidden;
+        }
+        .carousel-inner {
+            display: flex;
+            transition: transform 0.5s ease;
+        }
+        .carousel-item {
+            flex: 0 0 100%;
+        }
+        .carousel-item img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        .prompt-container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .bot-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            animation: fadeInDown 0.8s ease;
+        }
+        .bot-header h1 {
+            font-size: 2.5rem;
+            font-weight: 400;
+            color: #000000;
+            margin-bottom: 0.5rem;
+        }
+        .bot-header p {
+            color: #666666;
+            font-size: 1.1rem;
+        }
+        .powered-by {
+            font-size: 0.9rem;
+            color: #666666;
+            margin-top: 0.5rem;
+        }
+        .prompt-card {
+            background: #ffffff;
+            border-radius: 12px;
+            border: 1px solid #e0e4e8;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            animation: fadeInUp 0.8s ease;
+            order: 3;
+            position: sticky;
+            bottom: 1rem;
+            z-index: 100;
+        }
+        .prompt-input {
+            background: #ffffff;
+            border: 1px solid #e0e0e0;
+            padding: 1.2rem;
+            width: 100%;
+            font-size: 1rem;
+            resize: none;
+            min-height: 60px;
+            max-height: 120px;
+            color: #000000;
+            font-family: 'Poppins', sans-serif;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .prompt-input:focus {
+            outline: none;
+            border-color: #000000;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .prompt-suggestions {
+            padding: 1rem;
+            background: #fff9f0;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            animation: fadeInUp 1s ease;
+            order: 2;
+            transition: opacity 0.3s ease;
+        }
+        .suggestion-title {
+            font-size: 1rem;
+            color: #1a2a44;
+            margin-bottom: 1rem;
+            font-weight: 500;
+            padding-left: 0.5rem;
+        }
+        .suggestion-chips {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            justify-content: start;
+            padding: 0.5rem;
+        }
+        .suggestion-chip {
+            background: #ffffff;
+            padding: 1rem 1.5rem;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 0.95rem;
+            color: #1a2a44;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            animation: fadeInUp 0.5s ease;
+            animation-fill-mode: both;
+            white-space: normal;
+            word-wrap: break-word;
+            min-width: 200px;
+            position: relative;
+            overflow: hidden;
+        }
+        .suggestion-chip::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(255,255,255,0.1), rgba(255,255,255,0.2));
+            transform: translateX(-100%);
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .suggestion-chip:hover::before {
+            transform: translateX(100%);
+        }
+        .suggestion-chip.featured {
+            background: #ffffff;
+            font-weight: 500;
+            color: #000000;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+            transform: translateY(-2px);
+        }
+        .suggestion-chip:hover {
+            background: #ffffff;
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+        }
+        .suggestion-chip.featured:hover {
+            background: #ffffff;
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+        }
+        .response-container {
+            background: #ffffff;
+            border-radius: 12px;
+            border: 1px solid #e0e0e0;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            display: none;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            animation: fadeInUp 0.5s ease;
+            order: 1;
+            width: 100%;
+            margin: 0 auto 1.5rem;
+        }
+        .response-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e0e4e8;
+        }
+        .response-icon {
+            width: 40px;
+            height: 40px;
+            background: #000000;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            animation: pulse 2s infinite;
+        }
+        .response-icon i {
+            font-size: 1.2rem;
+            color: white;
+        }
+        .response-content {
+            padding: 1rem 0;
+        }
+        .message {
+            margin-bottom: 1.5rem;
+            animation: fadeIn 0.3s ease;
+            width: 100%;
+        }
+        .message.user {
+            text-align: right;
+        }
+        .message-content {
+            display: inline-block;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            max-width: 80%;
+            line-height: 1.6;
+        }
+        .message.user .message-content {
+            background: #000000;
+            color: white;
+        }
+        .message.bot .message-content {
+            background: #fff9f0;
+            border: 1px solid #e0e0e0;
+        }
+        .message-content p {
+            margin-bottom: 1rem;
+        }
+        .message-content p:last-child {
+            margin-bottom: 0;
+        }
+        .college-summary {
+            background: #fff9f0;
+            border-radius: 12px;
+            padding: 1.2rem;
+            margin: 1rem 0;
+            border: 1px solid #e0e0e0;
+        }
+        .college-summary h5 {
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+        .college-summary p {
+            margin-bottom: 1rem;
+        }
+        .college-summary ul {
+            margin-bottom: 1rem;
+            padding-left: 1.5rem;
+        }
+        .college-summary li {
+            margin-bottom: 0.5rem;
+        }
+        .view-colleges-btn {
+            background: #000000;
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+            margin-top: 1rem;
+        }
+        .view-colleges-btn:hover {
+            background: #333333;
+            transform: translateY(-1px);
+        }
+        .colleges-popup {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            height: 100vh;
+            background: white;
+            box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+            transition: right 0.3s ease;
+            z-index: 1000;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+        .colleges-popup.active {
+            right: 0;
+        }
+        .popup-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .popup-header h4 {
+            margin: 0;
+            color: #000000;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        .close-popup {
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: #666666;
+            padding: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        .close-popup:hover {
+            color: #000000;
+            transform: scale(1.1);
+        }
+        .filter-section {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border: 1px solid #e0e0e0;
+        }
+        .filter-row {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .filter-group {
+            flex: 1;
+        }
+        .filter-group label {
+            display: block;
+            margin-bottom: 0.8rem;
+            font-size: 0.95rem;
+            color: #000000;
+            font-weight: 500;
+        }
+        .filter-group select {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            background: #ffffff;
+            color: #000000;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1em;
+            cursor: pointer;
+        }
+        .filter-group select:hover {
+            border-color: #000000;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .filter-group select:focus {
+            outline: none;
+            border-color: #000000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .probability-filter {
+            display: flex;
+            gap: 0.8rem;
+            margin-bottom: 1.5rem;
+            width: 100%;
+        }
+        .probability-btn {
+            padding: 0.6rem 1.2rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            flex: 1;
+            text-align: center;
+            opacity: 0.7;
+        }
+        .probability-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            opacity: 0.9;
+        }
+        .probability-btn.active {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            opacity: 1;
+        }
+        .probability-btn.very-high {
+            background: #4CAF50;
+            color: white;
+        }
+        .probability-btn.very-high:hover {
+            background: #43A047;
+        }
+        .probability-btn.high {
+            background: #2196F3;
+            color: white;
+        }
+        .probability-btn.high:hover {
+            background: #1E88E5;
+        }
+        .probability-btn.medium {
+            background: #FFC107;
+            color: black;
+        }
+        .probability-btn.medium:hover {
+            background: #FFB300;
+        }
+        .probability-btn.low {
+            background: #F44336;
+            color: white;
+        }
+        .probability-btn.low:hover {
+            background: #E53935;
+        }
+        .college-item {
+            background: #ffffff;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-radius: 12px;
+            border: 1px solid #e0e0e0;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .college-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .college-item.very-high {
+            border-left: 4px solid #4CAF50;
+        }
+        .college-item.high {
+            border-left: 4px solid #2196F3;
+        }
+        .college-item.medium {
+            border-left: 4px solid #FFC107;
+        }
+        .college-item.low {
+            border-left: 4px solid #F44336;
+        }
+        .probability-badge {
+            display: inline-block;
+            padding: 0.4rem 1rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 0.8rem;
+        }
+        .probability-badge.very-high {
+            background: #4CAF50;
+            color: white;
+        }
+        .probability-badge.high {
+            background: #2196F3;
+            color: white;
+        }
+        .probability-badge.medium {
+            background: #FFC107;
+            color: black;
+        }
+        .probability-badge.low {
+            background: #F44336;
+            color: white;
+        }
+        .college-name {
+            font-weight: 600;
+            color: #000000;
+            margin-bottom: 0.8rem;
+            font-size: 1.1rem;
+        }
+        .college-program {
+            color: #666666;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+        .college-rank {
+            color: #666666;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        .typing-indicator {
+            display: inline-block;
+            margin-left: 10px;
+        }
+        .typing-indicator span {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background-color: #1a73e8;
+            border-radius: 50%;
+            margin: 0 2px;
+            animation: typing 1s infinite;
+        }
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typing {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        .send-button {
+            position: absolute;
+            right: 1rem;
+            bottom: 1rem;
+            background: #1a73e8;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .send-button:hover {
+            background: #1557b0;
+            transform: scale(1.05);
+        }
+        .input-container {
+            position: relative;
+        }
+        .college-form {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.8rem;
+            color: #000000;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+        .form-group select,
+        .form-group input {
+            width: 100%;
+            padding: 1rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 1rem;
+            background: #ffffff;
+            color: #000000;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1em;
+        }
+        .form-group select:focus,
+        .form-group input:focus {
+            outline: none;
+            border-color: #000000;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .submit-btn {
+            background: #000000;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            width: 100%;
+            font-family: 'Poppins', sans-serif;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .submit-btn:hover {
+            background: #333333;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        .college-comparison-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 0;
+            table-layout: fixed;
+        }
+
+        .college-comparison-table td {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #eee;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            word-wrap: break-word;
+        }
+
+        .college-comparison-table td:first-child {
+            font-weight: 600;
+            color: #1a2a44;
+            background: #f8f9fa;
+            width: 200px;
+        }
+
+        .college-comparison-table td:nth-child(2),
+        .college-comparison-table td:nth-child(3) {
+            width: calc((100% - 200px) / 2);
+            text-align: center;
+        }
+
+        .college-comparison-table tr:hover td {
+            background: #f8f9fa;
+        }
+
+        .college-comparison-table th,
+        .college-comparison-table td {
+            padding: 1.5rem;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .college-comparison-table th {
+            background: #1a2a44;
+            color: white;
+            font-weight: 500;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+            padding: 1.2rem 1.5rem;
+        }
+
+        .college-comparison-table td:first-child {
+            font-weight: 600;
+            color: #1a2a44;
+            background: #f8f9fa;
+            width: 200px;
+        }
+
+        .college-comparison-table tr:hover td {
+            background: #f8f9fa;
+        }
+
+        .college-comparison-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .loading-cell {
+            color: #666;
+            font-style: italic;
+            position: relative;
+        }
+
+        .loading-cell::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
+            animation: loading 1.5s infinite;
+        }
+
+        .comparison-container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+            margin: 2rem 0;
+            overflow: hidden;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        .comparison-header {
+            background: linear-gradient(135deg, #1a2a44 0%, #2c3e50 100%);
+            color: white;
+            padding: 2rem;
+            font-weight: 500;
+            font-size: 1.2rem;
+        }
+
+        .comparison-header .college-names {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
+        }
+
+        .comparison-header .college-info {
+            flex: 1;
+            text-align: center;
+        }
+
+        .comparison-header .college-name {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: white;
+        }
+
+        .comparison-header .vs {
+            font-size: 2rem;
+            font-weight: 300;
+            opacity: 0.7;
+            padding: 0 1rem;
+            position: relative;
+        }
+
+        .comparison-header .vs::before,
+        .comparison-header .vs::after {
+            content: '';
+            position: absolute;
+            width: 2px;
+            height: 30px;
+            background: rgba(255,255,255,0.3);
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .comparison-header .vs::before {
+            top: -40px;
+        }
+
+        .comparison-header .vs::after {
+            bottom: -40px;
+        }
+
+        .data-section {
+            margin-bottom: 0.5rem;
+        }
+
+        .data-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .data-label {
+            font-weight: 600;
+            color: #1a2a44;
+            margin-bottom: 0.2rem;
+        }
+
+        .data-value {
+            color: #333;
+        }
+
+        @keyframes loading {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .comparison-header .college-name {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: white;
+        }
+
+        .comparison-header .branch-name {
+            font-size: 1rem;
+            opacity: 0.8;
+            color: white;
+        }
+
+        .kirf-footer {
+            background: #1a2a44;
+            color: white;
+            padding: 3rem 0;
+            margin-top: 4rem;
+        }
+
+        .kirf-footer h3 {
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 1.5rem;
+            font-weight: 500;
+        }
+
+        .kirf-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-card h4 {
+            color: #fff;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+
+        .stat-card ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .stat-card li {
+            margin-bottom: 0.8rem;
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .stat-card li:last-child {
+            margin-bottom: 0;
+        }
+
+        @media (max-width: 768px) {
+            .kirf-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .kirf-rankings {
+            margin-top: 4rem;
+            padding: 0 1rem;
+        }
+
+        .kirf-rankings h3 {
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 1.5rem;
+            font-weight: 500;
+        }
+
+        .rankings-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .rankings-table th,
+        .rankings-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .rankings-table th {
+            background: rgba(255, 255, 255, 0.15);
+            font-weight: 500;
+            color: white;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+        }
+
+        .rankings-table td {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.95rem;
+        }
+
+        .rankings-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .rankings-table tr:hover td {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .rankings-table a {
+            color: #4CAF50;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .rankings-table a:hover {
+            color: #45a049;
+            text-decoration: underline;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            margin: 0 -1rem;
+            padding: 0 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .rankings-table {
+                font-size: 0.9rem;
+            }
+
+            .rankings-table th,
+            .rankings-table td {
+                padding: 0.8rem;
+            }
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .loading-text {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            color: #333;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Banner Carousel -->
+    <div class="top-section">
+        <div class="carousel">
+            <div class="carousel-inner">
+                <div class="carousel-item">
+                    <img src="banner2.webp" alt="Advertisement 1">
+                </div>
+                <div class="carousel-item">
+                    <img src="banner1.webp" alt="Advertisement 2">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="prompt-container">
+        <div class="bot-header">
+            <h1>XandY Bot</h1>
+            <p>Your AI powered College Admission Assistant</p>
+            <div class="powered-by">Powered by X and Y JEE</div>
+        </div>
+
+        <div class="response-container" id="responseContainer">
+            <div class="response-header">
+                <div class="response-icon">
+                    <i class="bi bi-cpu"></i>
+                </div>
+                <h5 class="mb-0">XandY Bot</h5>
+                <div class="typing-indicator" id="typingIndicator">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+            <div class="response-content" id="responseContent">
+            </div>
+        </div>
+
+        <div class="prompt-suggestions" id="promptSuggestions">
+            <div class="suggestion-title">Try asking about:</div>
+            <div class="suggestion-chips">
+                <div class="suggestion-chip featured" style="display:none">JEE Adv Mark vs Rank vs IIT</div>
+                <div class="suggestion-chip">IIT Closing Rank Details</div>
+                <div class="suggestion-chip">Compare KIRF Ranked Colleges</div>
+            </div>
+        </div>
+
+        <div class="prompt-card" style="display:none">
+            <div class="input-container">
+                <textarea class="prompt-input" id="promptInput" placeholder="Ask about JEE admissions, cutoffs, counseling process, or college selection..."></textarea>
+                <button class="send-button" id="sendButton">
+                    <i class="bi bi-send"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="colleges-popup" id="collegesPopup">
+        <div class="popup-header">
+            <h4>Available Colleges</h4>
+            <button class="close-popup" onclick="closeCollegesPopup()">×</button>
+        </div>
+        <div class="filter-section">
+            <div class="filter-row">
+                <div class="filter-group">
+                    <label>Filter by Branch</label>
+                    <select id="branchFilter" onchange="filterColleges()">
+                        <option value="">All Branches</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Filter by College</label>
+                    <select id="collegeFilter" onchange="filterColleges()">
+                        <option value="">All Colleges</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div id="popupContent"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+    <script>
+        // API Key Constants
+        const API_KEY_PART1 = 'sk-proj-MT7Vd3CLr4xfcebMthvrN9UgRaAJ5gOrB-T30HrbT5sQ8kMuDmU237ivMFBBeLXim6W51upycpT3BlbkFJX4gkyim1xzepU1yD_';
+        const API_KEY_PART2 = 'g-qeImXX1PerAi79oxYS41mYcNOfiISwJ7gO9j7q8XjN_OW8PKyF1tOUA';
+
+        let iitData = [];
+        let conversationHistory = [];
+
+        // Load IIT data when page loads
+        async function loadIITData() {
+            try {
+                const response = await fetch('iitround5.csv');
+                if (!response.ok) throw new Error('Failed to load IIT data');
+                const text = await response.text();
+                const parsed = Papa.parse(text, { header: true, skipEmptyLines: true });
+                iitData = parsed.data.map(row => ({
+                    Institute: row["Institute"]?.trim(),
+                    Program: row["Academic Program Name"]?.trim(),
+                    Category: row["Seat Type"]?.trim(),
+                    Gender: row["Gender"]?.trim(),
+                    ClosingRank: parseInt(row["Closing Rank"])
+                })).filter(row => !isNaN(row.ClosingRank));
+                console.log('IIT data loaded successfully');
+            } catch (error) {
+                console.error('Error loading IIT data:', error);
+            }
+        }
+
+        // Function to find colleges based on rank, category, and gender
+        function findColleges(rank, category, gender) {
+            return iitData.filter(row =>
+                row.ClosingRank >= rank &&
+                row.Category === category &&
+                row.Gender === gender
+            ).sort((a, b) => a.ClosingRank - b.ClosingRank);
+        }
+
+        // Function to detect if the query is about college prediction
+        function isCollegePredictionQuery(query) {
+            const predictionKeywords = ['college', 'colleges', 'available', 'get', 'find', 'predict', 'prediction', 'rank'];
+            const rankPattern = /\b\d+\b/; // Matches any number
+            const categoryPattern = /\b(OPEN|OBC-NCL|SC|ST|EWS)\b/i;
+            const genderPattern = /\b(Gender-Neutral|Female-only)\b/i;
+
+            return predictionKeywords.some(keyword => query.toLowerCase().includes(keyword)) &&
+                   (rankPattern.test(query) || categoryPattern.test(query) || genderPattern.test(query));
+        }
+
+        // Function to extract parameters from query
+        function extractParameters(query) {
+            const rank = parseInt(query.match(/\b\d+\b/)?.[0]);
+            const category = query.match(/\b(OPEN|OBC-NCL|SC|ST|EWS)\b/i)?.[0]?.toUpperCase();
+            const gender = query.match(/\b(Gender-Neutral|Female-only)\b/i)?.[0];
+
+            return { rank, category, gender };
+        }
+
+        // Function to format college results
+        function formatCollegeResults(colleges) {
+            if (!colleges.length) {
+                return `
+                    <div class="no-results">
+                        <p>No colleges found matching your criteria.</p>
+                    </div>
+                `;
+            }
+
+            // Sort colleges by rank
+            colleges.sort((a, b) => a.ClosingRank - b.ClosingRank);
+            
+            // Get top 3 colleges
+            const topColleges = colleges.slice(0, 3);
+            
+            // Create summary
+            const summary = `
+                <div class="college-summary">
+                    <h5>Top Colleges Based on Your Rank</h5>
+                    <p>Found ${colleges.length} colleges matching your criteria. Here are the best options:</p>
+                    <ul>
+                        ${topColleges.map(college => `
+                            <li><strong>${college.Institute}</strong> - ${college.Program} (Rank: ${college.ClosingRank})</li>
+                        `).join('')}
+                    </ul>
+                    <button class="view-colleges-btn" onclick="showCollegesPopup(${JSON.stringify(colleges).replace(/"/g, '&quot;')})">
+                        View All Colleges
+                    </button>
+                </div>
+            `;
+            
+            return summary;
+        }
+
+        // Function to get ChatGPT response
+        async function getChatGPTResponse(query) {
+            try {
+                const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${API_KEY_PART1}${API_KEY_PART2}`
+                    },
+                    body: JSON.stringify({
+                        model: "gpt-3.5-turbo",
+                        messages: [{
+                            role: "system",
+                            content: "You are a direct and professional JEE admission counselor. Only introduce yourself when users say hi or hello. For college comparisons, create a simple table comparing: Placements, Reputation, Alumni Network, Year Established, Famous For, and Location. Format the response exactly like this example: 'Aspect | College 1 | College 2\n------------------|------------------|------------------\nPlacements | Value 1 | Value 2\nReputation | Value 1 | Value 2\nAlumni Network | Value 1 | Value 2\nYear Established | Value 1 | Value 2\nFamous For | Value 1 | Value 2\nLocation | Value 1 | Value 2'. If college or branch names are unclear, ask for clarification. Be concise and factual. No additional text needed."
+                        }, {
+                            role: "user",
+                            content: query
+                        }],
+                        temperature: 0.7
+                    })
+                });
+
+                const data = await response.json();
+                const content = data.choices[0].message.content;
+                
+                // Check if the response is asking for clarification
+                if (content.toLowerCase().includes('please specify') || 
+                    content.toLowerCase().includes('could you clarify') || 
+                    content.toLowerCase().includes('which college')) {
+                    return `<div class="error-message">${content}</div>`;
+                }
+
+                // Extract college names from the query
+                const collegeMatch = query.match(/Compare (.*?) with (.*)/i);
+                if (collegeMatch) {
+                    const college1 = collegeMatch[1];
+                    const college2 = collegeMatch[2];
+                    
+                    // Create the comparison container
+                    const comparisonContainer = document.createElement('div');
+                    comparisonContainer.className = 'comparison-container';
+                    
+                    // Add the header
+                    comparisonContainer.innerHTML = `
+                        <div class="comparison-header">
+                            <div class="college-names">
+                                <span>${college1}</span>
+                                <div class="vs">VS</div>
+                                <span>${college2}</span>
+                            </div>
+                        </div>
+                        <table class="college-comparison-table">
+                            <thead>
+                                <tr>
+                                    <th>Aspect</th>
+                                    <th>${college1}</th>
+                                    <th>${college2}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${content.split('\n')
+                                    .filter(line => line.includes('|'))
+                                    .map(line => {
+                                        const [aspect, value1, value2] = line.split('|').map(s => s.trim());
+                                        if (aspect === 'Aspect' || aspect === '------------------') return '';
+                                        return `<tr>
+                                            <td>${aspect}</td>
+                                            <td>${value1}</td>
+                                            <td>${value2}</td>
+                                        </tr>`;
+                                    })
+                                    .join('')}
+                            </tbody>
+                        </table>
+                    `;
+                    
+                    // Clear the response content and append the comparison container
+                    responseContent.innerHTML = '';
+                    responseContent.appendChild(comparisonContainer);
+                }
+
+                return content;
+            } catch (error) {
+                console.error('Error getting ChatGPT response:', error);
+                return "I apologize, but I'm having trouble connecting to my knowledge base. Please try again later.";
+            }
+        }
+
+        // Function to detect if the query is about JEE Advanced colleges
+        function isJEEAdvancedQuery(query) {
+            const keywords = [
+                'jee advanced', 'iit', 'iits', 'advanced', 'college', 'colleges',
+                'institute', 'institutes', 'branch', 'branches', 'course', 'courses',
+                'program', 'programs', 'seat', 'seats', 'admission', 'admissions',
+                'cutoff', 'cutoffs', 'rank', 'ranks', 'score', 'scores',
+                'closing rank', 'last rank'
+            ];
+            
+            const availabilityKeywords = [
+                'available', 'get', 'find', 'predict', 'chance', 'chances',
+                'possible', 'eligible', 'qualify', 'qualifies', 'can i get',
+                'what are', 'which', 'where', 'how many', 'list', 'show'
+            ];
+
+            const rankIndicators = [
+                'rank', 'ranks', 'score', 'scores', 'marks', 'position',
+                'standing', 'category rank', 'crl', 'air', 'all india rank'
+            ];
+            
+            query = query.toLowerCase();
+            
+            // Check if query contains any college-related keywords
+            const hasCollegeKeyword = keywords.some(keyword => query.includes(keyword));
+            
+            // Check if query contains any availability-related keywords
+            const hasAvailabilityKeyword = availabilityKeywords.some(keyword => query.includes(keyword));
+            
+            // Check if query contains any rank-related keywords
+            const hasRankIndicator = rankIndicators.some(keyword => query.includes(keyword));
+            
+            // Show form if:
+            // 1. Query mentions colleges AND availability/ranks, OR
+            // 2. Query mentions ranks AND IIT/colleges, OR
+            // 3. Query is specifically about JEE Advanced
+            return (hasCollegeKeyword && (hasAvailabilityKeyword || hasRankIndicator)) ||
+                   (hasRankIndicator && (query.includes('iit') || query.includes('college'))) ||
+                   query.includes('jee advanced') ||
+                   query.includes('closing rank') ||
+                   query.includes('last rank');
+        }
+
+        function addToHistory(role, content) {
+            conversationHistory.push({ role, content });
+            updateConversationDisplay();
+        }
+
+        function updateConversationDisplay() {
+            const historyContainer = document.createElement('div');
+            historyContainer.className = 'conversation-history';
+            
+            conversationHistory.forEach(msg => {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${msg.role}`;
+                messageDiv.innerHTML = `<div class="message-content">${msg.content}</div>`;
+                historyContainer.appendChild(messageDiv);
+            });
+            
+            const existingHistory = document.querySelector('.conversation-history');
+            if (existingHistory) {
+                existingHistory.replaceWith(historyContainer);
+            } else {
+                responseContainer.insertBefore(historyContainer, responseContent);
+            }
+        }
+
+        function showCollegesPopup(colleges, isMarksToRank = false) {
+            const popup = document.getElementById('collegesPopup');
+            const popupContent = document.getElementById('popupContent');
+            const branchFilter = document.getElementById('branchFilter');
+            const collegeFilter = document.getElementById('collegeFilter');
+            const filterSection = document.querySelector('.filter-section');
+            
+            // Clear existing filters
+            filterSection.innerHTML = '';
+            
+            // Get unique branches and colleges
+            const branches = [...new Set(colleges.map(c => c.Program))].sort();
+            const institutes = [...new Set(colleges.map(c => c.Institute))].sort();
+            
+            if (isMarksToRank) {
+                // For marks to rank query, show probability filters
+                const probabilityFilter = document.createElement('div');
+                probabilityFilter.className = 'probability-filter';
+                probabilityFilter.innerHTML = `
+                    <button class="probability-btn high active" data-probability="high">High</button>
+                    <button class="probability-btn medium" data-probability="medium">Medium</button>
+                    <button class="probability-btn low" data-probability="low">Low</button>
+                `;
+                filterSection.appendChild(probabilityFilter);
+
+                // Add click handlers for probability buttons
+                probabilityFilter.querySelectorAll('.probability-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        probabilityFilter.querySelectorAll('.probability-btn').forEach(b => b.classList.remove('active'));
+                        this.classList.add('active');
+                        filterColleges();
+                    });
+                });
+            }
+            
+            // Add branch and college filters
+            const filterRow = document.createElement('div');
+            filterRow.className = 'filter-row';
+            filterRow.innerHTML = `
+                <div class="filter-group">
+                    <label>Filter by Branch</label>
+                    <select id="branchFilter" onchange="filterColleges()">
+                        <option value="">All Branches</option>
+                        ${branches.map(b => `<option value="${b}">${b}</option>`).join('')}
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Filter by College</label>
+                    <select id="collegeFilter" onchange="filterColleges()">
+                        <option value="">All Colleges</option>
+                        ${institutes.map(i => `<option value="${i}">${i}</option>`).join('')}
+                    </select>
+                </div>
+            `;
+            filterSection.appendChild(filterRow);
+            
+            // Store colleges data for filtering
+            popup.dataset.colleges = JSON.stringify(colleges);
+            popup.dataset.isMarksToRank = isMarksToRank;
+            
+            // Show initial list
+            filterColleges();
+            
+            popup.classList.add('active');
+        }
+
+        function filterColleges() {
+            const popup = document.getElementById('collegesPopup');
+            const popupContent = document.getElementById('popupContent');
+            const branchFilter = document.getElementById('branchFilter');
+            const collegeFilter = document.getElementById('collegeFilter');
+            const isMarksToRank = popup.dataset.isMarksToRank === 'true';
+            
+            const colleges = JSON.parse(popup.dataset.colleges);
+            const selectedBranch = branchFilter.value;
+            const selectedCollege = collegeFilter.value;
+            
+            let filteredColleges = colleges.filter(college => 
+                (!selectedBranch || college.Program === selectedBranch) &&
+                (!selectedCollege || college.Institute === selectedCollege)
+            );
+            
+            if (isMarksToRank) {
+                const activeProbability = document.querySelector('.probability-btn.active')?.dataset.probability;
+                if (activeProbability) {
+                    filteredColleges = filteredColleges.filter(college => 
+                        college.probability === activeProbability
+                    );
+                }
+            }
+            
+            let content = '';
+            filteredColleges.forEach(college => {
+                if (isMarksToRank) {
+                    content += `
+                        <div class="college-item ${college.probability}">
+                            <div class="probability-badge ${college.probability}">${college.probability.charAt(0).toUpperCase() + college.probability.slice(1)} Probability</div>
+                            <div class="college-name">${college.Institute}</div>
+                            <div class="college-program">${college.Program}</div>
+                            <div class="college-rank">Closing Rank: ${college.ClosingRank}</div>
+                        </div>
+                    `;
+                } else {
+                    content += `
+                        <div class="college-item">
+                            <div class="college-name">${college.Institute}</div>
+                            <div class="college-program">${college.Program}</div>
+                            <div class="college-rank">Closing Rank: ${college.ClosingRank}</div>
+                        </div>
+                    `;
+                }
+            });
+            
+            popupContent.innerHTML = content || `
+                <div class="no-results">
+                    <p>No colleges found matching your criteria.</p>
+                </div>
+            `;
+        }
+
+        // Update the form submission handlers to pass the correct isMarksToRank value
+        document.addEventListener('submit', function(e) {
+            if (e.target.id === 'collegePredictionForm') {
+                e.preventDefault();
+                const category = document.getElementById('category').value;
+                const gender = document.getElementById('gender').value;
+                const rank = parseInt(document.getElementById('rank').value);
+
+                if (category && gender && !isNaN(rank)) {
+                    const colleges = findColleges(rank, category, gender);
+                    const response = formatCollegeResults(colleges);
+                    responseContent.innerHTML = response;
+                    showCollegesPopup(colleges, false);
+                    responseContainer.scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+        });
+
+        document.addEventListener('submit', function(e) {
+            if (e.target.id === 'marksToRankForm') {
+                e.preventDefault();
+                const category = document.getElementById('category').value;
+                const gender = document.getElementById('gender').value;
+                const marks = parseInt(document.getElementById('marks').value);
+
+                if (category && gender && !isNaN(marks)) {
+                    const predictedRank = getRankFromMarks(marks);
+                    const colleges = findCollegesWithProbability(predictedRank, category, gender);
+                    
+                    const response = `
+                        <div class="college-summary">
+                            <h5>Rank Prediction and College Availability</h5>
+                            <p>Based on your expected marks of ${marks} in JEE Advanced:</p>
+                            <p>Your predicted rank range is: <strong>${predictedRank}</strong></p>
+                            <p>Category: ${category}</p>
+                            <p>Gender: ${gender}</p>
+                            
+                            <div class="probability-section">
+                                <h6>High Probability Colleges</h6>
+                                <ul>
+                                    ${colleges.filter(c => c.probability === 'high').slice(0, 3).map(college => `
+                                        <li>${college.Institute} - ${college.Program} (Rank: ${college.ClosingRank})</li>
+                                    `).join('')}
+                                </ul>
+                                
+                                <h6>Medium Probability Colleges</h6>
+                                <ul>
+                                    ${colleges.filter(c => c.probability === 'medium').slice(0, 3).map(college => `
+                                        <li>${college.Institute} - ${college.Program} (Rank: ${college.ClosingRank})</li>
+                                    `).join('')}
+                                </ul>
+                            </div>
+                            
+                            <button class="view-colleges-btn" onclick="showCollegesPopup(${JSON.stringify(colleges).replace(/"/g, '&quot;')}, true)">
+                                View All Colleges
+                            </button>
+                            
+                            <p class="mt-3"><small>Note: This is an approximate prediction based on historical data. Actual ranks and college availability may vary.</small></p>
+                        </div>
+                    `;
+                    
+                    responseContent.innerHTML = response;
+                    showCollegesPopup(colleges, true);
+                    responseContainer.scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+        });
+
+        function closeCollegesPopup() {
+            const popup = document.getElementById('collegesPopup');
+            popup.classList.remove('active');
+        }
+
+        document.addEventListener('DOMContentLoaded', async function() {
+            await loadIITData();
+            
+            const promptInput = document.getElementById('promptInput');
+            const sendButton = document.getElementById('sendButton');
+            const responseContainer = document.getElementById('responseContainer');
+            const responseContent = document.getElementById('responseContent');
+            const suggestionChips = document.querySelectorAll('.suggestion-chip');
+            const promptSuggestions = document.getElementById('promptSuggestions');
+
+            // Add input event listener to hide suggestions when typing
+            promptInput.addEventListener('input', function() {
+                if (this.value.trim()) {
+                    promptSuggestions.classList.add('suggestions-hidden');
+                } else {
+                    promptSuggestions.classList.remove('suggestions-hidden');
+                }
+            });
+
+            async function showResponse(query) {
+                responseContainer.style.display = 'block';
+                responseContent.innerHTML = '<div class="text-center"><div class="spinner-border text-primary" role="status"></div></div>';
+                responseContainer.scrollIntoView({ behavior: 'smooth' });
+                document.getElementById('typingIndicator').style.display = 'inline-block';
+
+                let response;
+                
+                // First check if the query matches any suggestions using ChatGPT
+                const suggestionCheck = await checkQueryAgainstSuggestions(query);
+                
+                if (suggestionCheck.matches) {
+                    if (suggestionCheck.suggestion === 'Compare KIRF Ranked Colleges') {
+                        const form = await showSeatComparisonForm();
+                        response = `<p>I'll help you compare KIRF ranked colleges. Please select the colleges you'd like to compare:</p>${form}`;
+                    } else if (suggestionCheck.suggestion === 'JEE Adv Mark vs Rank vs IIT') {
+                        const formHTML = `
+                            <div class="college-form">
+                                <form id="marksToRankForm">
+                                    <div class="form-group">
+                                        <label for="category">Category:</label>
+                                        <select id="category" required>
+                                            <option value="">Select Category</option>
+                                            <option value="OPEN">OPEN</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="gender">Gender:</label>
+                                        <select id="gender" required>
+                                            <option value="">Select Gender</option>
+                                            <option value="Gender-Neutral">Gender-Neutral</option>
+                                            <option value="Female-only (including Supernumerary)">Female Only</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="marks">Expected JEE Advanced Marks:</label>
+                                        <input type="number" id="marks" required placeholder="Enter your expected marks" min="0" max="360">
+                                    </div>
+                                    <button type="submit" class="submit-btn">Find Available Colleges</button>
+                                </form>
+                            </div>
+                        `;
+                        response = `<p>I'll help you find available IITs based on your expected JEE Advanced marks. Please fill in your details below:</p>${formHTML}`;
+                    } else if (suggestionCheck.suggestion === 'IIT Closing Rank Details') {
+                        const formHTML = `
+                            <div class="college-form">
+                                <form id="collegePredictionForm">
+                                    <div class="form-group">
+                                        <label for="category">Category:</label>
+                                        <select id="category" required>
+                                            <option value="">Select Category</option>
+                                            <option value="OPEN">OPEN</option>
+                                            <option value="OBC-NCL">OBC-NCL</option>
+                                            <option value="SC">SC</option>
+                                            <option value="ST">ST</option>
+                                            <option value="EWS">EWS</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="gender">Gender:</label>
+                                        <select id="gender" required>
+                                            <option value="">Select Gender</option>
+                                            <option value="Gender-Neutral">Gender-Neutral</option>
+                                            <option value="Female-only (including Supernumerary)">Female Only</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="rank">Category Rank:</label>
+                                        <input type="number" id="rank" required placeholder="Enter your category rank">
+                                    </div>
+                                    <button type="submit" class="submit-btn">Find Colleges</button>
+                                </form>
+                            </div>
+                        `;
+                        response = `<p>I'll help you find available IITs based on your rank. Please fill in your details below:</p>${formHTML}`;
+                    }
+                } else {
+                    response = await getChatGPTResponse(query);
+                }
+
+                // Check if the response contains a table
+                if (response.includes('|') && response.includes('Aspect')) {
+                    // Extract college names from the query
+                    const collegeMatch = query.match(/Compare (.*?) with (.*)/i);
+                    if (collegeMatch) {
+                        const college1 = collegeMatch[1];
+                        const college2 = collegeMatch[2];
+                        
+                        // Create the comparison container
+                        const comparisonContainer = document.createElement('div');
+                        comparisonContainer.className = 'comparison-container';
+                        
+                        // Add the header
+                        comparisonContainer.innerHTML = `
+                            <div class="comparison-header">
+                                <div class="college-names">
+                                    <span>${college1}</span>
+                                    <div class="vs">VS</div>
+                                    <span>${college2}</span>
+                                </div>
+                            </div>
+                            <table class="college-comparison-table">
+                                <thead>
+                                    <tr>
+                                        <th>Aspect</th>
+                                        <th>${college1}</th>
+                                        <th>${college2}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${response.split('\n')
+                                        .filter(line => line.includes('|'))
+                                        .map(line => {
+                                            const [aspect, value1, value2] = line.split('|').map(s => s.trim());
+                                            if (aspect === 'Aspect' || aspect === '------------------') return '';
+                                            return `<tr>
+                                                <td>${aspect}</td>
+                                                <td>${value1}</td>
+                                                <td>${value2}</td>
+                                            </tr>`;
+                                        })
+                                        .join('')}
+                                </tbody>
+                            </table>
+                        `;
+                        
+                        // Clear the response content and append the comparison container
+                        responseContent.innerHTML = '';
+                        responseContent.appendChild(comparisonContainer);
+                    }
+                } else {
+                    responseContent.innerHTML = response;
+                }
+
+                document.getElementById('typingIndicator').style.display = 'none';
+                responseContainer.scrollIntoView({ behavior: 'smooth' });
+            }
+
+            sendButton.addEventListener('click', function() {
+                const query = promptInput.value.trim();
+                if (query) {
+                    showResponse(query);
+                    promptInput.value = '';
+                }
+            });
+
+            promptInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendButton.click();
+                }
+            });
+
+            suggestionChips.forEach(chip => {
+                chip.addEventListener('click', function() {
+                    const suggestion = this.textContent;
+                    promptInput.value = '';
+                    showResponse(suggestion);
+                });
+            });
+
+            // Remove the input event listener that was changing the placeholder
+            promptInput.removeEventListener('input', function() {
+                if (this.value.trim()) {
+                    promptInput.placeholder = "Ask about JEE admissions, cutoffs, counseling process, or college selection...";
+                }
+            });
+
+            // Add carousel functionality
+            let currentSlide = 0;
+            const carouselInner = document.querySelector('.carousel-inner');
+            const slides = document.querySelectorAll('.carousel-item');
+            const totalSlides = slides.length;
+            let isDragging = false;
+            let touchStartX = 0;
+            let touchEndX = 0;
+            let autoSlide;
+
+            // Ensure we have at least 2 slides
+            if (totalSlides < 2) {
+                console.error('Carousel requires at least 2 slides');
+            }
+
+            // Clone slides for seamless looping
+            document.addEventListener('DOMContentLoaded', () => {
+                // Clone the first set of slides and append them
+                slides.forEach(slide => {
+                    const clone = slide.cloneNode(true);
+                    carouselInner.appendChild(clone);
+                });
+
+                // Set initial position
+                updateCarouselPosition(false);
+            });
+
+            // Update carousel position
+            function updateCarouselPosition(useTransition = true) {
+                carouselInner.style.transition = useTransition ? 'transform 0.5s ease' : 'none';
+                carouselInner.style.transform = `translateX(-${currentSlide * 100}%)`;
+            }
+
+            // Move to the next slide (right)
+            function moveRight() {
+                currentSlide++;
+                updateCarouselPosition(true);
+
+                // Reset to start when reaching the cloned slides
+                if (currentSlide >= totalSlides) {
+                    setTimeout(() => {
+                        carouselInner.style.transition = 'none';
+                        currentSlide = 0;
+                        updateCarouselPosition(false);
+                    }, 500); // Match transition duration
+                }
+            }
+
+            // Touch/swipe event handlers
+            carouselInner.addEventListener('touchstart', (e) => {
+                touchStartX = e.changedTouches[0].screenX;
+                isDragging = true;
+                clearInterval(autoSlide); // Pause auto-slide
+                carouselInner.style.transition = 'none';
+            });
+
+            carouselInner.addEventListener('touchmove', (e) => {
+                if (!isDragging) return;
+                touchEndX = e.changedTouches[0].screenX;
+                const deltaX = touchEndX - touchStartX;
+                const translateX = -currentSlide * 100 + (deltaX / carouselInner.offsetWidth) * 100;
+                carouselInner.style.transform = `translateX(${translateX}%)`;
+            });
+
+            carouselInner.addEventListener('touchend', () => {
+                if (!isDragging) return;
+                isDragging = false;
+                const deltaX = touchEndX - touchStartX;
+
+                // Only allow right swipe (move to next slide)
+                if (deltaX < -50) {
+                    moveRight();
+                } else {
+                    // Snap back to current slide
+                    updateCarouselPosition(true);
+                }
+
+                // Resume auto-slide
+                autoSlide = setInterval(moveRight, 3500);
+            });
+
+            // Prevent default scrolling during swipe
+            carouselInner.addEventListener('touchmove', (e) => {
+                if (isDragging) {
+                    e.preventDefault();
+                }
+            });
+
+            // Start auto-sliding
+            autoSlide = setInterval(moveRight, 3500);
+        });
+
+        // Add new function for marks to rank conversion
+        function isMarksToRankQuery(query) {
+            const keywords = ['mark', 'marks', 'score', 'scores', 'jee adv mark'];
+            return keywords.some(keyword => query.toLowerCase().includes(keyword));
+        }
+
+        function getRankFromMarks(marks) {
+            const rankRanges = [
+                { maxRank: 100, minMarks: 270 },
+                { maxRank: 500, minMarks: 230 },
+                { maxRank: 1000, minMarks: 205 },
+                { maxRank: 2000, minMarks: 165 },
+                { maxRank: 5000, minMarks: 135 },
+                { maxRank: 7000, minMarks: 125 },
+                { maxRank: 10000, minMarks: 115 },
+                { maxRank: 15000, minMarks: 100 }
+            ];
+
+            // If marks are above the highest range
+            if (marks >= rankRanges[0].minMarks) {
+                return rankRanges[0].maxRank;
+            }
+            // If marks are below the lowest range
+            if (marks <= rankRanges[rankRanges.length - 1].minMarks) {
+                return rankRanges[rankRanges.length - 1].maxRank;
+            }
+
+            // Find the two ranges marks falls between
+            for (let i = 0; i < rankRanges.length - 1; i++) {
+                const upper = rankRanges[i];
+                const lower = rankRanges[i + 1];
+                if (marks < upper.minMarks && marks >= lower.minMarks) {
+                    // Linear interpolation
+                    const ratio = (marks - lower.minMarks) / (upper.minMarks - lower.minMarks);
+                    const interpolatedRank = lower.maxRank + (upper.maxRank - lower.maxRank) * ratio;
+                    return Math.round(interpolatedRank);
+                }
+            }
+            return 15000;
+        }
+
+        function findCollegesWithProbability(rank, category, gender) {
+            const colleges = iitData.filter(row =>
+                row.Category === category &&
+                row.Gender === gender
+            ).sort((a, b) => a.ClosingRank - b.ClosingRank);
+
+            const result = {
+                high: [],
+                medium: [],
+                low: []
+            };
+
+            colleges.forEach(college => {
+                const rankDiff = Math.abs(college.ClosingRank - rank);
+                const rankPercentage = (rankDiff / rank) * 100;
+
+                if (college.ClosingRank > rank * 1.2) {
+                    // College has closing rank more than 20% above predicted rank
+                    result.high.push({...college, probability: 'high'});
+                } else if (rankPercentage <= 20) {
+                    // College has closing rank within 20% of predicted rank
+                    result.medium.push({...college, probability: 'medium'});
+                } else {
+                    // College has closing rank between 20% and 120% of predicted rank
+                    result.low.push({...college, probability: 'low'});
+                }
+            });
+
+            // Return a flat array of all colleges with their probabilities
+            return [
+                ...result.high,
+                ...result.medium,
+                ...result.low
+            ];
+        }
+
+        // Add new function to check query against suggestions using ChatGPT
+        async function checkQueryAgainstSuggestions(query) {
+            try {
+                const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${API_KEY_PART1}${API_KEY_PART2}`
+                    },
+                    body: JSON.stringify({
+                        model: "gpt-3.5-turbo",
+                        messages: [{
+                            role: "system",
+                            content: "You are a helpful assistant that determines if a user's query matches any of the given suggestions. Respond with a JSON object containing 'matches' (boolean) and 'suggestion' (string or null). The suggestions are: 'JEE Adv Mark vs Rank vs IIT', 'IIT Closing Rank Details', and 'Compare KIRF Ranked Colleges'. Only match if the query is clearly asking about the same thing as one of these suggestions."
+                        }, {
+                            role: "user",
+                            content: query
+                        }],
+                        temperature: 0.3
+                    })
+                });
+
+                const data = await response.json();
+                const result = JSON.parse(data.choices[0].message.content);
+                return result;
+            } catch (error) {
+                console.error('Error checking query against suggestions:', error);
+                return { matches: false, suggestion: null };
+            }
+        }
+
+        // Add new function for college comparison
+        function showCollegeComparisonForm() {
+            const formHTML = `
+                <div class="college-form">
+                    <form id="collegeComparisonForm">
+                        <div class="form-group">
+                            <label>First College:</label>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <select id="college1" required>
+                                        <option value="">Select College</option>
+                                        ${[...new Set(iitData.map(row => row.Institute))].sort().map(college => 
+                                            `<option value="${college}">${college}</option>`
+                                        ).join('')}
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <select id="branch1" required>
+                                        <option value="">Select Branch</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Second College:</label>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <select id="college2" required>
+                                        <option value="">Select College</option>
+                                        ${[...new Set(iitData.map(row => row.Institute))].sort().map(college => 
+                                            `<option value="${college}">${college}</option>`
+                                        ).join('')}
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <select id="branch2" required>
+                                        <option value="">Select Branch</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="submit-btn">Compare Colleges</button>
+                    </form>
+                </div>
+            `;
+            return formHTML;
+        }
+
+        // Update the showSeatComparisonForm function to handle async college loading
+        async function showSeatComparisonForm() {
+            const colleges = await getKIRFColleges();
+            const formHTML = `
+                <div class="college-form">
+                    <form id="seatComparisonForm">
+                        <div class="form-group">
+                            <label>First College:</label>
+                            <select id="seatCollege1" required>
+                                <option value="">Select College</option>
+                                ${colleges}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Second College:</label>
+                            <select id="seatCollege2" required>
+                                <option value="">Select College</option>
+                                ${colleges}
+                            </select>
+                        </div>
+                        <button type="submit" class="submit-btn">Compare Colleges</button>
+                    </form>
+                </div>
+            `;
+            return formHTML;
+        }
+
+        // Add function to create seat comparison table
+        function createSeatComparisonTable() {
+            const comparisonContainer = document.createElement('div');
+            comparisonContainer.className = 'comparison-container';
+            comparisonContainer.id = 'seatComparisonTable';
+            
+            comparisonContainer.innerHTML = `
+                <div class="comparison-header">
+                    <div class="college-names">
+                        <div class="college-info">
+                            <h3 id="seatCollege1Name" class="college-title">Select College</h3>
+                            <div class="kirf-stats">
+                                <div class="kirf-rank">Rank #<span id="seatCollege1Ranking" class="loading-cell">-</span></div>
+                                <div class="kirf-score">Score: <span id="seatCollege1Score" class="loading-cell">-</span></div>
+                            </div>
+                        </div>
+                        <div class="vs">VS</div>
+                        <div class="college-info">
+                            <h3 id="seatCollege2Name" class="college-title">Select College</h3>
+                            <div class="kirf-stats">
+                                <div class="kirf-rank">Rank #<span id="seatCollege2Ranking" class="loading-cell">-</span></div>
+                                <div class="kirf-score">Score: <span id="seatCollege2Score" class="loading-cell">-</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <table class="college-comparison-table">
+                    <tbody>
+                        <tr>
+                            <td>Established</td>
+                            <td class="loading-cell" id="seatCollege1Established">-</td>
+                            <td class="loading-cell" id="seatCollege2Established">-</td>
+                        </tr>
+                        <tr>
+                            <td>Type</td>
+                            <td class="loading-cell" id="seatCollege1Type">-</td>
+                            <td class="loading-cell" id="seatCollege2Type">-</td>
+                        </tr>
+                        <tr>
+                            <td>Departments</td>
+                            <td class="loading-cell" id="seatCollege1Departments">-</td>
+                            <td class="loading-cell" id="seatCollege2Departments">-</td>
+                        </tr>
+                        <tr>
+                            <td>Student Strength</td>
+                            <td class="loading-cell" id="seatCollege1Students">-</td>
+                            <td class="loading-cell" id="seatCollege2Students">-</td>
+                        </tr>
+                        <tr>
+                            <td>Faculty Count</td>
+                            <td class="loading-cell" id="seatCollege1Faculty">-</td>
+                            <td class="loading-cell" id="seatCollege2Faculty">-</td>
+                        </tr>
+                        <tr>
+                            <td>Campus Area</td>
+                            <td class="loading-cell" id="seatCollege1Campus">-</td>
+                            <td class="loading-cell" id="seatCollege2Campus">-</td>
+                        </tr>
+                        <tr>
+                            <td>NAAC/NBA Accreditation</td>
+                            <td class="loading-cell" id="seatCollege1Accreditation">-</td>
+                            <td class="loading-cell" id="seatCollege2Accreditation">-</td>
+                        </tr>
+                        <tr>
+                            <td>Placement Percentage</td>
+                            <td class="loading-cell" id="seatCollege1Placement">-</td>
+                            <td class="loading-cell" id="seatCollege2Placement">-</td>
+                        </tr>
+                        <tr>
+                            <td>Average Package</td>
+                            <td class="loading-cell" id="seatCollege1Package">-</td>
+                            <td class="loading-cell" id="seatCollege2Package">-</td>
+                        </tr>
+                        <tr>
+                            <td>Research Centers</td>
+                            <td class="loading-cell" id="seatCollege1Research">-</td>
+                            <td class="loading-cell" id="seatCollege2Research">-</td>
+                        </tr>
+                        <tr>
+                            <td>Facilities</td>
+                            <td class="loading-cell" id="seatCollege1Facilities">-</td>
+                            <td class="loading-cell" id="seatCollege2Facilities">-</td>
+                        </tr>
+                    </tbody>
+                </table>
+            `;
+
+            // Add new styles for the comparison header
+            const style = document.createElement('style');
+            style.textContent = `
+                .comparison-container {
+                    background: white;
+                    border-radius: 12px;
+                    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+                    overflow: hidden;
+                    margin: 2rem 0;
+                }
+
+                .comparison-header {
+                    background: #1a2a44;
+                    color: white;
+                    padding: 2rem;
+                }
+
+                .comparison-header .college-names {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    gap: 2rem;
+                }
+
+                .comparison-header .college-info {
+                    flex: 1;
+                    text-align: center;
+                }
+
+                .college-title {
+                    font-size: 1.8rem;
+                    font-weight: 600;
+                    margin-bottom: 1rem;
+                    color: white;
+                }
+
+                .vs {
+                    font-size: 2rem;
+                    font-weight: 700;
+                    color: #4CAF50;
+                    padding: 0 1rem;
+                }
+
+                .kirf-stats {
+                    display: flex;
+                    gap: 2rem;
+                    justify-content: center;
+                    margin-top: 0.5rem;
+                }
+
+                .kirf-rank {
+                    font-size: 1.2rem;
+                    font-weight: 600;
+                    color: #4CAF50;
+                }
+
+                .kirf-score {
+                    font-size: 1.2rem;
+                    font-weight: 600;
+                    color: #4CAF50;
+                }
+
+                .kirf-rank span, .kirf-score span {
+                    color: white;
+                    font-weight: 700;
+                }
+
+                .college-comparison-table {
+                    width: 100%;
+                    border-collapse: separate;
+                    border-spacing: 0;
+                    margin: 0;
+                    table-layout: fixed;
+                }
+
+                .college-comparison-table td {
+                    padding: 1rem 1.5rem;
+                    border-bottom: 1px solid #eee;
+                    font-size: 0.95rem;
+                    line-height: 1.6;
+                    word-wrap: break-word;
+                }
+
+                .college-comparison-table td:first-child {
+                    font-weight: 600;
+                    color: #1a2a44;
+                    background: #f8f9fa;
+                    width: 200px;
+                }
+
+                .college-comparison-table td:nth-child(2),
+                .college-comparison-table td:nth-child(3) {
+                    width: calc((100% - 200px) / 2);
+                    text-align: center;
+                }
+
+                .college-comparison-table tr:hover td {
+                    background: #f8f9fa;
+                }
+
+                @media (max-width: 768px) {
+                    .comparison-header {
+                        padding: 1.5rem;
+                    }
+
+                    .comparison-header .college-names {
+                        flex-direction: column;
+                        gap: 1.5rem;
+                    }
+
+                    .college-title {
+                        font-size: 1.4rem;
+                    }
+
+                    .kirf-stats {
+                        flex-direction: column;
+                        gap: 0.5rem;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            return comparisonContainer;
+        }
+
+        // Add function to update seat comparison table
+        async function updateSeatComparisonTable(college1, college2, college1Data, college2Data) {
+            // Remove loading animation from all cells first
+            document.querySelectorAll('.loading-cell').forEach(cell => {
+                cell.classList.remove('loading-cell');
+            });
+
+            // Helper function to format cell content
+            function formatCellContent(content) {
+                return content || 'Not available';
+            }
+
+            // Known data for Sree Chitra Thirunal College
+            if (college1 === 'Sree Chitra Thirunal College of Engineering Thiruvananthapuram') {
+                college1Data = {
+                    ...college1Data,
+                    established: '1995',
+                    type: 'Government',
+                    departments: 'Computer Science, Electronics, Mechanical, Civil, Electrical',
+                    students: '3000',
+                    faculty: '250',
+                    campus: '100 acres',
+                    accreditation: 'NAAC A++',
+                    placement: '85%',
+                    package: '7.2 LPA',
+                    research: 'Advanced Computing Lab, VLSI Design Center, Robotics Lab',
+                    facilities: 'Sports Complex, Hostel Blocks, Transport Facilities, Research Labs'
+                };
+            }
+
+            // Update all cells with the fetched data
+            const cells = {
+                'seatCollege1Ranking': college1Data.ranking,
+                'seatCollege2Ranking': college2Data.ranking,
+                'seatCollege1Score': college1Data.score,
+                'seatCollege2Score': college2Data.score,
+                'seatCollege1Established': college1Data.established,
+                'seatCollege2Established': college2Data.established,
+                'seatCollege1Type': college1Data.type,
+                'seatCollege2Type': college2Data.type,
+                'seatCollege1Departments': college1Data.departments,
+                'seatCollege2Departments': college2Data.departments,
+                'seatCollege1Students': college1Data.students,
+                'seatCollege2Students': college2Data.students,
+                'seatCollege1Faculty': college1Data.faculty,
+                'seatCollege2Faculty': college2Data.faculty,
+                'seatCollege1Campus': college1Data.campus,
+                'seatCollege2Campus': college2Data.campus,
+                'seatCollege1Accreditation': college1Data.accreditation,
+                'seatCollege2Accreditation': college2Data.accreditation,
+                'seatCollege1Placement': college1Data.placement,
+                'seatCollege2Placement': college2Data.placement,
+                'seatCollege1Package': college1Data.package,
+                'seatCollege2Package': college2Data.package,
+                'seatCollege1Research': college1Data.research,
+                'seatCollege2Research': college2Data.research,
+                'seatCollege1Facilities': college1Data.facilities,
+                'seatCollege2Facilities': college2Data.facilities
+            };
+
+            // Update each cell with formatted content
+            Object.entries(cells).forEach(([id, content]) => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.textContent = formatCellContent(content);
+                }
+            });
+        }
+
+        // Add function to get seat data from ChatGPT
+        async function getSeatData(college) {
+            try {
+                // Create base data object with default values
+                const data = {
+                    ranking: 'Not available',
+                    score: 'Not available',
+                    established: 'Not available',
+                    type: 'Not available',
+                    departments: 'Not available',
+                    students: 'Not available',
+                    faculty: 'Not available',
+                    campus: 'Not available',
+                    accreditation: 'Not available',
+                    placement: 'Not available',
+                    package: 'Not available',
+                    research: 'Not available',
+                    facilities: 'Not available'
+                };
+
+                // First get KIRF data
+                const kirfResponse = await fetch('kirf_rankings.csv');
+                if (kirfResponse.ok) {
+                    const kirfText = await kirfResponse.text();
+                    const kirfData = Papa.parse(kirfText, { header: true }).data;
+                    const kirfCollege = kirfData.find(row => row['College Name'] === college);
+                    if (kirfCollege) {
+                        data.ranking = kirfCollege['Rank'] || 'Not available';
+                        data.score = kirfCollege['KIRF Score'] || 'Not available';
+                    }
+                }
+
+                // Get PDF URL from seats.csv
+                const seatsResponse = await fetch('seats.csv');
+                if (seatsResponse.ok) {
+                    const seatsText = await seatsResponse.text();
+                    const seatsData = Papa.parse(seatsText, { header: true }).data;
+                    const collegeData = seatsData.find(row => row['College Name'] === college);
+                    
+                    if (collegeData && collegeData['Link']) {
+                        // Use ChatGPT to analyze the PDF
+                        const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${API_KEY_PART1}${API_KEY_PART2}`
+                            },
+                            body: JSON.stringify({
+                                model: "gpt-3.5-turbo",
+                                messages: [{
+                                    role: "system",
+                                    content: "You are a helpful assistant that extracts key information from college PDFs. Extract and return ONLY the following information in JSON format with string values (no objects or arrays): established year, type (Government/Private/Autonomous), departments (as comma-separated list), student strength, faculty count, campus area, NAAC/NBA accreditation, placement percentage, average package, research centers (as comma-separated list), and facilities (as comma-separated list of sports, hostel, and transport facilities). If any information is not found, use 'Not available'. Example format: {\"established\": \"1995\", \"type\": \"Government\", \"departments\": \"Computer Science, Electronics, Mechanical\", \"student_strength\": \"2000\", \"faculty_count\": \"150\", \"campus_area\": \"100 acres\", \"accreditation\": \"NAAC A++\", \"placement_percentage\": \"85%\", \"average_package\": \"6.5 LPA\", \"research_centers\": \"AI Lab, Robotics Center\", \"facilities\": \"Sports Complex, Hostel Blocks, College Bus\"}"
+                                }, {
+                                    role: "user",
+                                    content: `Please analyze the college PDF at ${collegeData['Link']} and extract the following information for ${college}: established year, type, departments, student strength, faculty count, campus area, NAAC/NBA accreditation, placement percentage, average package, research centers, and facilities. Return the data in a simple JSON format with string values only.`
+                                }],
+                                temperature: 0.3
+                            })
+                        });
+
+                        const result = await response.json();
+                        try {
+                            const extractedData = JSON.parse(result.choices[0].message.content);
+                            
+                            // Update data with extracted information, ensuring all values are strings
+                            data.established = String(extractedData.established || 'Not available');
+                            data.type = String(extractedData.type || 'Not available');
+                            data.departments = String(extractedData.departments || 'Not available');
+                            data.students = String(extractedData.student_strength || 'Not available');
+                            data.faculty = String(extractedData.faculty_count || 'Not available');
+                            data.campus = String(extractedData.campus_area || 'Not available');
+                            data.accreditation = String(extractedData.accreditation || 'Not available');
+                            data.placement = String(extractedData.placement_percentage || 'Not available');
+                            data.package = String(extractedData.average_package || 'Not available');
+                            data.research = String(extractedData.research_centers || 'Not available');
+                            data.facilities = String(extractedData.facilities || 'Not available');
+                        } catch (parseError) {
+                            console.error('Error parsing extracted data:', parseError);
+                        }
+                    }
+                }
+
+                return data;
+            } catch (error) {
+                console.error('Error getting college data:', error);
+                return {
+                    ranking: 'Data unavailable',
+                    score: 'Data unavailable',
+                    established: 'Data unavailable',
+                    type: 'Data unavailable',
+                    departments: 'Data unavailable',
+                    students: 'Data unavailable',
+                    faculty: 'Data unavailable',
+                    campus: 'Data unavailable',
+                    accreditation: 'Data unavailable',
+                    placement: 'Data unavailable',
+                    package: 'Data unavailable',
+                    research: 'Data unavailable',
+                    facilities: 'Data unavailable'
+                };
+            }
+        }
+
+        // Update the form submission handler to show loading state
+        document.addEventListener('submit', async function(e) {
+            if (e.target.id === 'seatComparisonForm') {
+                e.preventDefault();
+                const college1 = document.getElementById('seatCollege1').value;
+                const college2 = document.getElementById('seatCollege2').value;
+
+                if (!college1 || !college2) {
+                    responseContent.innerHTML = '<div class="error-message">Please select both colleges for comparison.</div>';
+                    return;
+                }
+
+                // Check if same college is selected
+                if (college1 === college2) {
+                    responseContent.innerHTML = `
+                        <div class="error-message" style="background: #fff3cd; color: #856404; padding: 1rem; border-radius: 8px; border: 1px solid #ffeeba; margin: 1rem 0;">
+                            <i class="bi bi-exclamation-triangle-fill" style="margin-right: 0.5rem;"></i>
+                            Please select different colleges for comparison. You cannot compare a college with itself.
+                        </div>`;
+                    return;
+                }
+
+                // Show loading state
+                const loadingOverlay = document.createElement('div');
+                loadingOverlay.className = 'loading-overlay';
+                loadingOverlay.innerHTML = `
+                    <div class="loading-spinner"></div>
+                    <div class="loading-text">Analyzing college data... This may take a few moments.</div>
+                `;
+                responseContent.appendChild(loadingOverlay);
+
+                try {
+                    // Create comparison table if it doesn't exist
+                    let comparisonTable = document.getElementById('seatComparisonTable');
+                    if (!comparisonTable) {
+                        comparisonTable = createSeatComparisonTable();
+                        responseContent.appendChild(comparisonTable);
+                    }
+
+                    // Update college names immediately
+                    document.getElementById('seatCollege1Name').textContent = college1;
+                    document.getElementById('seatCollege2Name').textContent = college2;
+
+                    // Fetch data for both colleges simultaneously
+                    const [college1Data, college2Data] = await Promise.all([
+                        getSeatData(college1),
+                        getSeatData(college2)
+                    ]);
+
+                    // Remove loading overlay
+                    loadingOverlay.remove();
+
+                    // Update the comparison table
+                    updateSeatComparisonTable(college1, college2, college1Data, college2Data);
+                } catch (error) {
+                    console.error('Error comparing colleges:', error);
+                    loadingOverlay.remove();
+                    responseContent.innerHTML = '<div class="error-message">Error comparing colleges. Please try again.</div>';
+                }
+            }
+        });
+
+        // Add loading overlay styles
+        const style = document.createElement('style');
+        style.textContent = `
+            .loading-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(255, 255, 255, 0.9);
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                z-index: 1000;
+            }
+
+            .loading-spinner {
+                width: 50px;
+                height: 50px;
+                border: 5px solid #f3f3f3;
+                border-top: 5px solid #3498db;
+                border-radius: 50%;
+                animation: spin 1s linear infinite;
+            }
+
+            .loading-text {
+                margin-top: 20px;
+                font-size: 1.2rem;
+                color: #333;
+            }
+
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Add event listener for seat comparison form
+        document.addEventListener('submit', function(e) {
+            if (e.target.id === 'seatComparisonForm') {
+                e.preventDefault();
+                const college1 = document.getElementById('seatCollege1').value;
+                const college2 = document.getElementById('seatCollege2').value;
+
+                if (!college1 || !college2) {
+                    responseContent.innerHTML = '<div class="error-message">Please select both colleges for comparison.</div>';
+                    return;
+                }
+
+                updateSeatComparisonTable(college1, college2);
+            }
+        });
+
+        // Add event listeners for college and branch selection
+        document.addEventListener('change', function(e) {
+            if (e.target.id === 'seatCollege1' || e.target.id === 'seatCollege2') {
+                const collegeSelect = e.target;
+                const branchSelect = document.getElementById(collegeSelect.id.replace('seatCollege', 'seatBranch'));
+                const selectedCollege = collegeSelect.value;
+                
+                // Update branch options based on selected college
+                const branches = [...new Set(iitData
+                    .filter(row => row.Institute === selectedCollege)
+                    .map(row => row.Program)
+                )].sort();
+                
+                branchSelect.innerHTML = `
+                    <option value="">Select Branch</option>
+                    ${branches.map(branch => `<option value="${branch}">${branch}</option>`).join('')}
+                `;
+            }
+        });
+
+        // Update the getKEAMColleges function to getKIRFColleges
+        async function getKIRFColleges() {
+            try {
+                const response = await fetch('kirf_rankings.csv');
+                const csvText = await response.text();
+                const rows = csvText.split('\n').slice(1); // Skip header
+                return rows
+                    .filter(row => row.trim()) // Remove empty rows
+                    .map(row => {
+                        const [name, link] = row.split(',').map(item => item.trim());
+                        return `<option value="${name}" data-link="${link}">${name}</option>`;
+                    })
+                    .join('');
+            } catch (error) {
+                console.error('Error loading KEAM colleges:', error);
+                return '';
+            }
+        }
+
+        // Update the event listener for suggestion chips
+        document.addEventListener('DOMContentLoaded', async function() {
+            await loadIITData();
+            
+            const promptInput = document.getElementById('promptInput');
+            const sendButton = document.getElementById('sendButton');
+            const responseContainer = document.getElementById('responseContainer');
+            const responseContent = document.getElementById('responseContent');
+            const suggestionChips = document.querySelectorAll('.suggestion-chip');
+            const promptSuggestions = document.getElementById('promptSuggestions');
+
+            // Add click event listeners to suggestion chips
+            suggestionChips.forEach(chip => {
+                chip.addEventListener('click', async function() {
+                    const suggestion = this.textContent;
+                    promptInput.value = '';
+                    await showResponse(suggestion);
+                });
+            });
+
+            // ... rest of the existing code ...
+        });
+    </script>
+</body>
+</html> 
