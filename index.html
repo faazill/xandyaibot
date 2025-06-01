@@ -710,19 +710,16 @@
 
         .comparison-container {
             background: white;
-            border-radius: 16px;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
-            margin: 2rem 0;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
             overflow: hidden;
-            animation: fadeInUp 0.5s ease;
+            margin: 2rem 0;
         }
 
         .comparison-header {
-            background: linear-gradient(135deg, #1a2a44 0%, #2c3e50 100%);
+            background: #1a2a44;
             color: white;
             padding: 2rem;
-            font-weight: 500;
-            font-size: 1.2rem;
         }
 
         .comparison-header .college-names {
@@ -737,223 +734,181 @@
             text-align: center;
         }
 
-        .comparison-header .college-name {
-            font-size: 1.4rem;
+        .college-title {
+            font-size: 1.8rem;
             font-weight: 600;
-            margin-bottom: 0.5rem;
+            margin-bottom: 1rem;
             color: white;
         }
 
-        .comparison-header .vs {
+        .vs {
             font-size: 2rem;
-            font-weight: 300;
-            opacity: 0.7;
+            font-weight: 700;
+            color: #4CAF50;
             padding: 0 1rem;
-            position: relative;
-        }
-
-        .comparison-header .vs::before,
-        .comparison-header .vs::after {
-            content: '';
-            position: absolute;
-            width: 2px;
-            height: 30px;
-            background: rgba(255,255,255,0.3);
-            left: 50%;
-            transform: translateX(-50%);
-        }
-
-        .comparison-header .vs::before {
-            top: -40px;
-        }
-
-        .comparison-header .vs::after {
-            bottom: -40px;
-        }
-
-        .data-section {
-            margin-bottom: 0.5rem;
-        }
-
-        .data-section:last-child {
-            margin-bottom: 0;
-        }
-
-        .data-label {
-            font-weight: 600;
-            color: #1a2a44;
-            margin-bottom: 0.2rem;
-        }
-
-        .data-value {
-            color: #333;
-        }
-
-        @keyframes loading {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        .comparison-header .college-name {
-            font-size: 1.4rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            color: white;
-        }
-
-        .comparison-header .branch-name {
-            font-size: 1rem;
-            opacity: 0.8;
-            color: white;
-        }
-
-        .kirf-footer {
-            background: #1a2a44;
-            color: white;
-            padding: 3rem 0;
-            margin-top: 4rem;
-        }
-
-        .kirf-footer h3 {
-            text-align: center;
-            margin-bottom: 2rem;
-            font-size: 1.5rem;
-            font-weight: 500;
         }
 
         .kirf-stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            display: flex;
             gap: 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 1rem;
+            justify-content: center;
+            margin-top: 0.5rem;
         }
 
-        .stat-card {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 1.5rem;
-            border-radius: 12px;
-            backdrop-filter: blur(10px);
-        }
-
-        .stat-card h4 {
-            color: #fff;
-            margin-bottom: 1rem;
+        .kirf-rank {
             font-size: 1.2rem;
-            font-weight: 500;
+            font-weight: 600;
+            color: #4CAF50;
         }
 
-        .stat-card ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
+        .kirf-score {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #4CAF50;
         }
 
-        .stat-card li {
-            margin-bottom: 0.8rem;
-            font-size: 0.95rem;
-            color: rgba(255, 255, 255, 0.9);
+        .kirf-rank span, .kirf-score span {
+            color: white;
+            font-weight: 700;
         }
 
-        .stat-card li:last-child {
-            margin-bottom: 0;
-        }
-
-        @media (max-width: 768px) {
-            .kirf-stats {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .kirf-rankings {
-            margin-top: 4rem;
-            padding: 0 1rem;
-        }
-
-        .kirf-rankings h3 {
-            text-align: center;
-            margin-bottom: 2rem;
-            font-size: 1.5rem;
-            font-weight: 500;
-        }
-
-        .rankings-table {
+        .college-comparison-table {
             width: 100%;
             border-collapse: separate;
             border-spacing: 0;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            overflow: hidden;
-            margin-bottom: 2rem;
+            margin: 0;
+            table-layout: fixed;
         }
 
-        .rankings-table th,
-        .rankings-table td {
-            padding: 1rem;
-            text-align: left;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .rankings-table th {
-            background: rgba(255, 255, 255, 0.15);
-            font-weight: 500;
-            color: white;
-            text-transform: uppercase;
-            font-size: 0.9rem;
-            letter-spacing: 0.5px;
-        }
-
-        .rankings-table td {
-            color: rgba(255, 255, 255, 0.9);
+        .college-comparison-table td {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #eee;
             font-size: 0.95rem;
+            line-height: 1.6;
+            word-wrap: break-word;
         }
 
-        .rankings-table tr:last-child td {
-            border-bottom: none;
+        .college-comparison-table td:first-child {
+            font-weight: 600;
+            color: #1a2a44;
+            background: #f8f9fa;
+            width: 200px;
         }
 
-        .rankings-table tr:hover td {
-            background: rgba(255, 255, 255, 0.05);
+        .college-comparison-table td:nth-child(2),
+        .college-comparison-table td:nth-child(3) {
+            width: calc((100% - 200px) / 2);
+            text-align: center;
         }
 
-        .rankings-table a {
-            color: #4CAF50;
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s ease;
-        }
-
-        .rankings-table a:hover {
-            color: #45a049;
-            text-decoration: underline;
-        }
-
-        .table-responsive {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            margin: 0 -1rem;
-            padding: 0 1rem;
+        .college-comparison-table tr:hover td {
+            background: #f8f9fa;
         }
 
         @media (max-width: 768px) {
-            .rankings-table {
+            .comparison-header {
+                padding: 1.5rem;
+            }
+
+            .comparison-header .college-names {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+
+            .college-title {
+                font-size: 1.4rem;
+            }
+
+            .vs {
+                font-size: 1.5rem;
+                padding: 0.5rem 0;
+                position: relative;
+            }
+
+            .vs::before,
+            .vs::after {
+                content: '';
+                position: absolute;
+                width: 30%;
+                height: 2px;
+                background: rgba(255,255,255,0.3);
+                top: 50%;
+            }
+
+            .vs::before {
+                left: -35%;
+            }
+
+            .vs::after {
+                right: -35%;
+            }
+
+            .kirf-stats {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .college-comparison-table {
+                display: block;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .college-comparison-table td {
+                padding: 0.8rem;
                 font-size: 0.9rem;
             }
 
-            .rankings-table th,
-            .rankings-table td {
-                padding: 0.8rem;
+            .college-comparison-table td:first-child {
+                width: 150px;
+                position: sticky;
+                left: 0;
+                z-index: 1;
+            }
+
+            .college-comparison-table td:nth-child(2),
+            .college-comparison-table td:nth-child(3) {
+                width: 200px;
+                min-width: 200px;
+            }
+
+            .college-comparison-table tr {
+                display: flex;
+                width: 100%;
+            }
+
+            .college-comparison-table tr td {
+                flex: 1;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .comparison-header {
+                padding: 1rem;
+            }
+
+            .college-title {
+                font-size: 1.2rem;
+            }
+
+            .kirf-rank,
+            .kirf-score {
+                font-size: 1rem;
+            }
+
+            .college-comparison-table td {
+                padding: 0.6rem;
+                font-size: 0.85rem;
+            }
+
+            .college-comparison-table td:first-child {
+                width: 120px;
+            }
+
+            .college-comparison-table td:nth-child(2),
+            .college-comparison-table td:nth-child(3) {
+                width: 160px;
+                min-width: 160px;
             }
         }
 
@@ -2179,9 +2134,96 @@
                         font-size: 1.4rem;
                     }
 
+                    .vs {
+                        font-size: 1.5rem;
+                        padding: 0.5rem 0;
+                        position: relative;
+                    }
+
+                    .vs::before,
+                    .vs::after {
+                        content: '';
+                        position: absolute;
+                        width: 30%;
+                        height: 2px;
+                        background: rgba(255,255,255,0.3);
+                        top: 50%;
+                    }
+
+                    .vs::before {
+                        left: -35%;
+                    }
+
+                    .vs::after {
+                        right: -35%;
+                    }
+
                     .kirf-stats {
                         flex-direction: column;
                         gap: 0.5rem;
+                    }
+
+                    .college-comparison-table {
+                        display: block;
+                        overflow-x: auto;
+                        -webkit-overflow-scrolling: touch;
+                    }
+
+                    .college-comparison-table td {
+                        padding: 0.8rem;
+                        font-size: 0.9rem;
+                    }
+
+                    .college-comparison-table td:first-child {
+                        width: 150px;
+                        position: sticky;
+                        left: 0;
+                        z-index: 1;
+                    }
+
+                    .college-comparison-table td:nth-child(2),
+                    .college-comparison-table td:nth-child(3) {
+                        width: 200px;
+                        min-width: 200px;
+                    }
+
+                    .college-comparison-table tr {
+                        display: flex;
+                        width: 100%;
+                    }
+
+                    .college-comparison-table tr td {
+                        flex: 1;
+                    }
+                }
+
+                @media (max-width: 480px) {
+                    .comparison-header {
+                        padding: 1rem;
+                    }
+
+                    .college-title {
+                        font-size: 1.2rem;
+                    }
+
+                    .kirf-rank,
+                    .kirf-score {
+                        font-size: 1rem;
+                    }
+
+                    .college-comparison-table td {
+                        padding: 0.6rem;
+                        font-size: 0.85rem;
+                    }
+
+                    .college-comparison-table td:first-child {
+                        width: 120px;
+                    }
+
+                    .college-comparison-table td:nth-child(2),
+                    .college-comparison-table td:nth-child(3) {
+                        width: 160px;
+                        min-width: 160px;
                     }
                 }
             `;
